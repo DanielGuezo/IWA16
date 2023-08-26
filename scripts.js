@@ -68,44 +68,61 @@ const MONTHS = [
   // Only edit below this comment
   
   const createHtml = (athlete) => {
-    firstName, surname, id, races = athlete
-    [date], [time] = races.reverse()
+    const firstName = athlete.firstName
+    const surname = athlete.surname
+    const id = athlete.id
+    const races = athlete.races
+    const date = []
+    const time = []
+    let latestTime = 0
+
+    for (const [key,value] of Object.entries(races.reverse())) {
+      date.push(value.date)
+      time.push(value.time)
+    }
+    const latestDate = new Date(date[0])
   
     const fragment = document.createDocumentFragment();
   
-    title = document.createElement(h2);
-    title= id;
-    fragment.appendChild(title);
+    const title = fragment.appendChild(document.createElement("h2"));
+    title.textContent = id
   
-    const list = document.createElement(dl);
+    const list = fragment.appendChild(document.createElement("dl"));
   
-    const day = date.getDate();
-    const month = MONTHS[date.month];
-    const year = date.year;
+    const day = latestDate.getDate();
+    const month = MONTHS[latestDate.getMonth()];
+    const year = latestDate.getFullYear();
   
-    first, second, third, fourth = timeAsArray;
-    total = first + second + third + fourth;
-  
-    const hours = total / 60;
-    const minutes = total / hours / 60;
+    for (const [key, value] of Object.entries(time[0])) {
+      latestTime += value
+      //const first = value
+      //console.log(first)
+    }
   
     list.innerHTML = /* html */ `
       <dt>Athlete</dt>
-      <dd>${firstName surname}</dd>
+      <dd>${firstName + " " + surname}</dd>
   
       <dt>Total Races</dt>
-      <dd>${races}</dd>
+      <dd>${races.length}</dd>
   
       <dt>Event Date (Latest)</dt>
-      <dd>${day month year}</dd>
+      <dd>${day + " " + month + " " + year}</dd>
   
       <dt>Total Time (Latest)</dt>
-      <dd>${hours.padStart(2, 0) minutes}</dd>
+      <dd>00:${latestTime}</dd>
     `;
   
     fragment.appendChild(list);
+  
+    document.querySelector('[data-athlete="'+id+'"]').appendChild(fragment)
   }
   
-  [NM372], [SV782] = data
-  document.querySelector(NM372).appendChild(createHtml(NM372));
-  document.querySelector(SV782).appendChild(createHtml(SV782));
+ //[NM372], [SV782] = data.response.data
+  //console.log(NM372)
+  for (const [key,value] of Object.entries(data.response.data)) {
+    createHtml(value);
+  }
+
+  //document.querySelector(NM372).appendChild(createHtml(NM372));
+  //document.querySelector(SV782).appendChild(createHtml(SV782));
